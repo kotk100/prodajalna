@@ -227,6 +227,7 @@ streznik.get('/prijava', function(zahteva, odgovor) {
   vrniStranke(function(napaka1, stranke) {
       vrniRacune(function(napaka2, racuni) {
         odgovor.render('prijava', {sporocilo: sporociloPrijava, seznamStrank: stranke, seznamRacunov: racuni});
+        sporociloPrijava = "";
       }) 
     });
 })
