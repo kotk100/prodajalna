@@ -159,6 +159,9 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
 
 // Izpis računa v HTML predstavitvi ali izvorni XML obliki
 streznik.get('/izpisiRacun/:oblika', function(zahteva, odgovor) {
+  if(!zahteva.session.stranka)
+    odgovor.redirect('/prijava');
+    
   pesmiIzKosarice(zahteva, function(pesmi) {
     if (!pesmi) {
       odgovor.sendStatus(500);
@@ -247,7 +250,7 @@ streznik.post('/stranka', function(zahteva, odgovor) {
 // Odjava stranke
 streznik.post('/odjava', function(zahteva, odgovor) {
     zahteva.session.stranka = null;
-    odgovor.redirect('/prijava') 
+    odgovor.redirect('/prijava');
 })
 
 
