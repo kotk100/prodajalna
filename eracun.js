@@ -47,6 +47,9 @@ function davcnaStopnja(izvajalec, zanr) {
 
 // Prikaz seznama pesmi na strani
 streznik.get('/', function(zahteva, odgovor) {
+  if(!zahteva.session.stranka)
+    odgovor.redirect('/prijava');
+  
   pb.all("SELECT Track.TrackId AS id, Track.Name AS pesem, \
           Artist.Name AS izvajalec, Track.UnitPrice * " +
           razmerje_usd_eur + " AS cena, \
@@ -112,6 +115,9 @@ var pesmiIzKosarice = function(zahteva, callback) {
 }
 
 streznik.get('/kosarica', function(zahteva, odgovor) {
+  if(!zahteva.session.stranka)
+    odgovor.redirect('/prijava');
+    
   pesmiIzKosarice(zahteva, function(pesmi) {
     if (!pesmi)
       odgovor.sendStatus(500);
@@ -153,6 +159,9 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
 
 // Izpis računa v HTML predstavitvi ali izvorni XML obliki
 streznik.get('/izpisiRacun/:oblika', function(zahteva, odgovor) {
+  if(!zahteva.session.stranka)
+    odgovor.redirect('/prijava');
+    
   pesmiIzKosarice(zahteva, function(pesmi) {
     if (!pesmi) {
       odgovor.sendStatus(500);
@@ -237,13 +246,15 @@ streznik.post('/stranka', function(zahteva, odgovor) {
   var form = new formidable.IncomingForm();
   
   form.parse(zahteva, function (napaka1, polja, datoteke) {
+    zahteva.session.stranka = polja['seznamStrank'];
     odgovor.redirect('/')
   });
 })
 
 // Odjava stranke
 streznik.post('/odjava', function(zahteva, odgovor) {
-    odgovor.redirect('/prijava') 
+    zahteva.session.stranka = null;
+    odgovor.redirect('/prijava');
 })
 
 
